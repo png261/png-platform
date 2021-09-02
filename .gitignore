@@ -1,0 +1,8 @@
+server/node_modules
+server/*.env
+<<<<<<< HEAD
+
+=======
+>>>>>>> ab6529f4736a32d926d13400863dc0d235ea6afa
+client/node_modules
+client/*.env

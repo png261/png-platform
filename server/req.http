@@ -1,0 +1,8 @@
+POST http://localhost:5000/api/posts
+Content-Type:application/json
+Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MTJhMDMyOGUxZDJjOTNiZjFmYzU5ZTEiLCJpYXQiOjE2MzAxNDMzMTB9.YfBcJeWriGCuJvRkAMKHqW5SRQedV72bpPbMMTPuZaw
+
+{
+    "title":"this is commnet",
+    "content":" | test |    | setest |\n |----|----|----|\n |    | tset |    |\n |    |    |    |\n"
+}
