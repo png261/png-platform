@@ -1,10 +1,10 @@
 const Post = require('../../../models/Post');
+const User = require('../../../models/User');
 const catchForm = require('../../../utils/catchForm');
 
 const getPost = async (req, res) => {
     await catchForm(req, res, async () => {
         const post = await Post.findOne({ _id: req.params.id });
-
         if (!post) {
             return res
                 .status(404)
@@ -18,6 +18,8 @@ const getPost = async (req, res) => {
 const getUserPosts = async (req, res) => {
     await catchForm(req, res, async () => {
         const userId = req.params.id;
+        const { page, limit } = req.query;
+
         const isExistUser = await User.findById(userId);
         if (!isExistUser) {
             return res
@@ -25,16 +27,13 @@ const getUserPosts = async (req, res) => {
                 .json({ success: false, message: 'User not found' });
         }
 
+        const count = await Post.find({ userId, status: 'PUBLIC' }).count();
         const posts = await Post.find({ userId, status: 'PUBLIC' }, null, {
-            limit: 20,
+            skip: page * limit,
+            limit: +limit,
         });
-        if (posts.length === 0) {
-            return res
-                .status(404)
-                .json({ success: false, message: 'User has no post' });
-        }
 
-        req.validate = { ...req.validate, posts };
+        req.validate = { ...req.validate, posts, count };
     });
 };
 

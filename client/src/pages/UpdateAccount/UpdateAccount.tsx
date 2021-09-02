@@ -11,6 +11,7 @@ export default function UpdateAccount() {
         newUsername: user.username,
         newPassword: '',
     });
+    console.log(account);
 
     const updateData = (e: React.ChangeEvent<HTMLInputElement>) => {
         setAccount((state) => ({ ...state, [e.target.name]: e.target.value }));
@@ -40,7 +41,7 @@ export default function UpdateAccount() {
                 <br />
                 <input
                     name="newUsername"
-                    placeholder="email"
+                    placeholder="newUsername"
                     onChange={updateData}
                     value={account['newUsername']}
                 />

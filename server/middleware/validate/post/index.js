@@ -20,7 +20,7 @@ const create = async (req, res, next) => {
 
 const update = async (req, res, next) => {
     await verifyToken(req, res);
-    check.update(req, res);
+    handle.update(req, res);
     next();
 };
 
@@ -28,7 +28,7 @@ const remove = update;
 
 const vote = async (req, res, next) => {
     await verifyToken(req, res);
-    check.update(req, res);
+    await handle.vote(req, res);
     next();
 };
 

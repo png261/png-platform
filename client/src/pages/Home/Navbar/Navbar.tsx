@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from 'src/action/auth';
 
 export function Navbar() {
-    const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+    const { user, isAuthenticated } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
 
     const logout = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -18,7 +18,7 @@ export function Navbar() {
                 {isAuthenticated ? (
                     <>
                         <Link to={PATH.WRITTING}>write</Link>
-                        <Link to={PATH.ACCOUNT}>account</Link>
+                        <Link to={`${PATH.ACCOUNT}/${user._id}`}>account</Link>
                         <a href="" onClick={logout}>
                             logout
                         </a>

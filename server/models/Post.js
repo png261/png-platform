@@ -11,7 +11,10 @@ const PostSchema = new Schema({
         type: String,
         require: true,
     },
-    vote: [{ type: Schema.Types.ObjectId, ref: 'user' }],
+    vote: {
+        type:Array,
+        default:[]
+    },
     status: {
         type: String,
         enum: ['PRIVATE', 'PUBLIC'],

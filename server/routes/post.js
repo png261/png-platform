@@ -5,46 +5,50 @@ const Comment = require('../models/Comment');
 const validate = require('../middleware/validate/post');
 const catchForm = require('../utils/catchForm');
 
-//@route GET api/post
+//@route GET api/posts
 //@desc Get all post
 //@access Public
 router.get('/', async (req, res) => {
     await catchForm(req, res, async () => {
+        const { page, limit } = req.query;
+        const count = await Post.find({ status: 'PUBLIC' }).count();
         const posts = await Post.find({ status: 'PUBLIC' }, null, {
-            limit: 20,
+            skip: page * limit,
+            limit: +limit,
         });
-        res.json({ success: true, posts });
+        res.json({ success: true, posts, count });
     });
 });
 
-//@route GET api/post/:id
+//@route GET api/posts/:id
 //@desc Get a post by cuid
 //@access Public
 router.get('/:id', validate.getPost, (req, res) => {
     res.json({ success: true, post: req.validate.post });
 });
 
-//@route GET api/post/user/:id
+//@route GET api/posts/userj:id
 //@desc Get all post of user
 //@access Public
-router.get('/user/:id', validate.getUserPosts, async (req, res) => {
-    res.json({ success: true, posts: req.validate.posts });
+router.get('/user/:id', validate.getUserPosts, (req, res) => {
+    const { posts, count } = req.validate;
+    res.json({ success: true, posts, count });
 });
 
-//@route POSTS api/post/
+//@route POSTS api/posts/
 //@desc Create a post
 //@access Private
 router.post('/', validate.create, async (req, res) => {
     catchForm(req, res, async () => {
+        const { userId } = req.validate;
         const { title, content } = req.body;
-        let newPost = new Post({ userId: req.userId, title, content });
+        let newPost = new Post({ userId, title, content });
         newPost = await newPost.save();
-
-        res.json({ success: true, message: 'Post created', newPost });
+        res.json({ success: true, message: 'Posts has been created', newPost });
     });
 });
 
-//@route PATCH api/post/:id
+//@route PATCH api/posts/:id
 //@desc Update post by cuid
 //@access Private
 router.patch('/:id', validate.update, async (req, res) => {
@@ -56,7 +60,6 @@ router.patch('/:id', validate.update, async (req, res) => {
             },
             req.body
         );
-
         res.json({
             success: true,
             post: updatedPost,
@@ -64,7 +67,7 @@ router.patch('/:id', validate.update, async (req, res) => {
     });
 });
 
-//@route DELETE api/post/:id
+//@route DELETE api/posts/:id
 //@desc Delete post by cuid
 //@access Private
 router.delete('/:id', validate.remove, async (req, res) => {
@@ -85,25 +88,38 @@ router.delete('/:id', validate.remove, async (req, res) => {
     });
 });
 
-//@route POST api/post:id/vote
+//@route POST api/posts/:id/vote
 //@desc Upvote post by cuid
 //@access Private
-router.post('/vote', validate.vote, async (req, res) => {
+router.post('/:id/vote', validate.vote, async (req, res) => {
     catchForm(req, res, async () => {
-        const { post } = req.validate;
+        const {post,userId} = req.validate
+        const postId = req.params.id;
+        
+        let query ={
+                $push: { vote: userId},
+        };
+        let message = 'Vote successfully'
 
-        if (post.upVote.includes(req.userId)) {
-            await post.updateOne({
-                $pull: { vote: req.userId },
-            });
-            return res.json({ success: true, message: 'Un-vote successfully' });
+
+        if (post.vote.includes(req.validate.userId)) {
+            query = {
+                $pull: { vote: userId},
+            }
+            message = 'Un-vote successfully'
         }
 
-        await post.updateOne({
-            $push: { vote: req.userId },
-        });
+       const newPost =  await Post.findOneAndUpdate(
+            {_id:postId},
+            query,
+            { new: true }
+        );
 
-        return res.json({ success: true, message: 'Vote successfully' });
+        return res.json({
+            success: true,
+            message,
+            post:newPost 
+        });
     });
 });
 

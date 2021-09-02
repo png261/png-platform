@@ -49,12 +49,12 @@ export default function Home() {
                 />
                 <br />
                 <br />
-                <button onClick={submit}>Login</button>
+                <button onClick={submit}>register</button>
             </form>
             <br />
             <br />
             <small>
-                you have account? <Link to={PATH.LOGIN}>Register</Link>
+                you have account? <Link to={PATH.LOGIN}>login</Link>
             </small>
         </MainLayout>
     );

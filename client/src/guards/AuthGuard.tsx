@@ -3,15 +3,11 @@ import { Redirect, Route } from 'react-router-dom';
 import { PATH } from 'src/constants/paths';
 
 export default function AuthGuard({ children, ...props }) {
-    const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+    const { isLoading, isAuthenticated } = useSelector((state) => state.auth);
 
-    return (
-        <>
-            {isAuthenticated ? (
-                <Route {...props}>{children}</Route>
-            ) : (
-                <Redirect to={PATH.LOGIN} />
-            )}
-        </>
-    );
+    if (!isLoading && !isAuthenticated) {
+        return <Redirect to={PATH.LOGIN} />;
+    }
+
+    return <Route {...props}>{children}</Route>;
 }

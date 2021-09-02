@@ -1,31 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const Comment = require('../models/Comment');
-const Post = require('../models/Post');
-const verifyToken = require('../middleware/validate/verifyToken');
+const validate = require('../middleware/validate/comment')
 
-const isExistPost = async (req, res, next) => {
-    catchForm(req, res, async () => {
-        const isExistPost = await Post.findById(req.params.postId);
-
-        if (!isExistPost) {
-            return res
-                .status(404)
-                .json({ success: false, message: 'Post not found' });
-        }
-
-        next();
-    });
-};
 
 //@route GET api/post:postId/comment
 //@desc Get all comment of current post id
 //@access Public
-router.get('/:postId/comment', isExistPost, async (req, res) => {
-    catchForm(req, res, async () => {
-        const comments = await Comment.find({ postId: req.params.postId });
-        res.json({ success: true, comments });
-    });
+router.get('/:postId/comment', validate.getComments, (req, res) => {
+    res.json({ success: true, comments:req.validate.comments });
 });
 
 //@route POSTS api/post:postId/comment
@@ -57,38 +39,38 @@ router.post(
     }
 );
 
-//@route DELETE api/post:postId/comment
-//@desc Delete comment by cuid
-//@access Private
-router.delete(
-    '/:postId/comment/:id',
-    [verifyToken, isExistPost],
-    async (req, res) => {
-        catchForm(req, res, async () => {
-            const comment = await Comment.findById(req.params.id);
-            if (!comment) {
-                return res
-                    .status(404)
-                    .json({ success: false, message: 'Comment not found' });
-            }
+// //@route DELETE api/post:postId/comment
+// //@desc Delete comment by cuid
+// //@access Private
+// router.delete(
+//     '/:postId/comment/:id',
+//     [verifyToken, isExistPost],
+//     async (req, res) => {
+//         catchForm(req, res, async () => {
+//             const comment = await Comment.findById(req.params.id);
+//             if (!comment) {
+//                 return res
+//                     .status(404)
+//                     .json({ success: false, message: 'Comment not found' });
+//             }
 
-            if (comment.userId != req.userId) {
-                return res
-                    .status(403)
-                    .json({ success: false, message: 'Permission denied' });
-            }
+//             if (comment.userId != req.userId) {
+//                 return res
+//                     .status(403)
+//                     .json({ success: false, message: 'Permission denied' });
+//             }
 
-            await Comment.findOneAndDelete({
-                _id: req.params.id,
-                userId: req.userId,
-            });
+//             await Comment.findOneAndDelete({
+//                 _id: req.params.id,
+//                 userId: req.userId,
+//             });
 
-            res.json({
-                success: true,
-                message: `Comment ${req.params.id} has been deleted`,
-            });
-        });
-    }
-);
+//             res.json({
+//                 success: true,
+//                 message: `Comment ${req.params.id} has been deleted`,
+//             });
+//         });
+//     }
+// );
 
 module.exports = router;

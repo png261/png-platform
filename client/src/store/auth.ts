@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 interface AuthState {
     isAuthenticated: boolean;
     isLoading: boolean;
-    user: { email: string; username: string; createdAt?: string };
+    user: { _id?: string; email: string; username: string; createdAt?: string };
 }
 
 const initialState: AuthState = {
