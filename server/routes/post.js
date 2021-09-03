@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
             skip: page * limit,
             limit: +limit,
         });
-        res.json({ success: true, posts, count });
+        res.json({ success: true, newData: posts, count });
     });
 });
 
@@ -32,7 +32,7 @@ router.get('/:id', validate.getPost, (req, res) => {
 //@access Public
 router.get('/user/:id', validate.getUserPosts, (req, res) => {
     const { posts, count } = req.validate;
-    res.json({ success: true, posts, count });
+    res.json({ success: true, newData: posts, count });
 });
 
 //@route POSTS api/posts/
@@ -93,32 +93,31 @@ router.delete('/:id', validate.remove, async (req, res) => {
 //@access Private
 router.post('/:id/vote', validate.vote, async (req, res) => {
     catchForm(req, res, async () => {
-        const {post,userId} = req.validate
+        const { post, userId } = req.validate;
         const postId = req.params.id;
-        
-        let query ={
-                $push: { vote: userId},
-        };
-        let message = 'Vote successfully'
 
+        let query = {
+            $push: { vote: userId },
+        };
+        let message = 'Vote successfully';
 
         if (post.vote.includes(req.validate.userId)) {
             query = {
-                $pull: { vote: userId},
-            }
-            message = 'Un-vote successfully'
+                $pull: { vote: userId },
+            };
+            message = 'Un-vote successfully';
         }
 
-       const newPost =  await Post.findOneAndUpdate(
-            {_id:postId},
-            query,
-            { new: true }
-        );
+        const { vote } = await Post.findOneAndUpdate({ _id: postId }, query, {
+            new: true,
+        });
+
+        const io = req.app.get('socket.io');
+        io.to(postId).emit('updateVote', vote);
 
         return res.json({
             success: true,
             message,
-            post:newPost 
         });
     });
 });

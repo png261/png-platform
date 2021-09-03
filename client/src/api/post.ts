@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { API_URL } from 'src/constants/api';
 
-export const getPosts = async (getCondition: GetCondititon) => {
+export const getPosts = async (getCondition: GetCondition) => {
     return await axios.get(`${API_URL}/posts`, {
         params: {
             ...getCondition,
@@ -11,7 +11,7 @@ export const getPosts = async (getCondition: GetCondititon) => {
 
 export const getUserPosts = async (
     userId: string,
-    getCondition: GetCondititon
+    getCondition: GetCondition
 ) => {
     return await axios.get(`${API_URL}/posts/user/${userId}`, {
         params: {

@@ -4,8 +4,3 @@ interface Post {
     vote?: [];
     status?: string;
 }
-
-interface GetCondititon {
-    page: number;
-    limit: number;
-}

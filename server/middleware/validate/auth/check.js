@@ -4,7 +4,7 @@ const checkRequest = require('../checkRequest');
 const update = (req, res) => {
     const schema = Joi.object({
         newUsername: Joi.string().min(6).required(),
-        newPassword: Joi.string().min(6).optional(),
+        newPassword: Joi.string().allow('').min(6).optional(),
     });
     checkRequest(req, res, schema);
 };

@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { getUserPosts } from 'src/action/post';
-import InfinityPosts from 'src/components/InfinitePosts/InfinitePosts';
+import InfinityList from 'src/components/InfiniteList/InfiniteList';
 import MainLayout from 'src/layouts/MainLayout';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
@@ -10,8 +10,8 @@ export default function Account() {
     const user = useSelector((state) => state.auth.user);
     const [totalPosts, setTotalPost] = useState('...loading');
 
-    const getPosts = async (condition) => {
-        return await getUserPosts(id, condition);
+    const getPosts = async (getCondition: GetCondition) => {
+        return await getUserPosts(id, getCondition);
     };
 
     useEffect(() => {
@@ -31,7 +31,7 @@ export default function Account() {
             <p>Joined: {user.createdAt}</p>
             <p>total posts: {totalPosts}</p>
             <h2>user's posts:</h2>
-            <InfinityPosts getPosts={getPosts} />
+            <InfinityList getData={getPosts} />
         </MainLayout>
     );
 }

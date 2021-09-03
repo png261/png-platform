@@ -1,43 +1,48 @@
 const express = require('express');
 const router = express.Router();
-const validate = require('../middleware/validate/comment')
+const validate = require('../middleware/validate/comment');
+const catchForm = require('../utils/catchForm');
+const Comment = require('../models/Comment');
+const User = require('../models/User');
 
-
-//@route GET api/post:postId/comment
+//@route GET api/posts/:postId/comment
 //@desc Get all comment of current post id
 //@access Public
-router.get('/:postId/comment', validate.getComments, (req, res) => {
-    res.json({ success: true, comments:req.validate.comments });
+router.get('/:postId/comment', validate.get, (req, res) => {
+    catchForm(req, res, async () => {
+        const { postId } = req.params;
+        const { page, limit } = req.query;
+        const count = await Comment.find({ postId }).count();
+        let comments = await Comment.find({ postId }, null, {
+            skip: page * limit,
+            limit: +limit,
+        }).populate('user', 'username');
+
+        res.json({ success: true, newData: comments, count });
+    });
 });
 
-//@route POSTS api/post:postId/comment
+//@route POSTS api/posts/:postId/comment
 //@desc Create comment
 //@access Private
-router.post(
-    '/:postId/comment',
-    [verifyToken, isExistPost],
-    async (req, res) => {
-        catchForm(req, res, async () => {
-            const { content } = req.body;
-
-            if (!content) {
-                return res.status(400).json({
-                    success: false,
-                    message: 'content is required',
-                });
-            }
-
-            let newComment = new Comment({
-                userId: req.userId,
-                postId: req.params.postId,
-                content,
-            });
-            newComment = await newComment.save();
-
-            res.json({ success: true, message: 'Comment created', newComment });
+router.post('/:postId/comment', validate.create, async (req, res) => {
+    catchForm(req, res, async () => {
+        const { postId } = req.params;
+        let newComment = new Comment({
+            user: req.validate.userId,
+            postId: req.params.postId,
+            content: req.body.content,
         });
-    }
-);
+        newComment = await newComment.save();
+        const user = await User.findById(req.validate.userId);
+        newComment.user = user;
+
+        const io = req.app.get('socket.io');
+        io.to(postId).emit('createdComment', newComment);
+
+        res.json({ success: true, message: 'Comment created' });
+    });
+});
 
 // //@route DELETE api/post:postId/comment
 // //@desc Delete comment by cuid

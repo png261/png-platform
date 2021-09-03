@@ -1,7 +1,7 @@
-GET http://localhost:5000/api/posts/61303ef2429f058f4e727d9d
-Content-Type:application/json
-Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MTJhMDMyOGUxZDJjOTNiZjFmYzU5ZTEiLCJpYXQiOjE2MzAxNDMzMTB9.YfBcJeWriGCuJvRkAMKHqW5SRQedV72bpPbMMTPuZaw
+POST http://localhost:5000/api/posts/61318ad1d49397494021db82/comment
+Content-Type: application/json
+Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MTMxOGE5YTExNjMwZjQ3ZTRjODg4N2YiLCJpYXQiOjE2MzA2NjAzOTh9.VAvznl_wp_7lQzcB_UOxgmzwvcegQr5oGOVVg2Www2I
 
 {
-    "page":1
+    "content":"this is comment"
 }

@@ -1,8 +1,8 @@
 import * as POST_API from 'src/api/post';
 
-export const getPosts = async (getCondititon: GetCondititon) => {
+export const getPosts = async (getCondition: GetCondition) => {
     try {
-        const { data } = await POST_API.getPosts(getCondititon);
+        const { data } = await POST_API.getPosts(getCondition);
         if (data.success) {
             return data;
         }
@@ -44,7 +44,7 @@ export const addPost = async (post: Post) => {
 
 export const getUserPosts = async (
     userId: string,
-    getCondition: GetCondititon
+    getCondition: GetCondition
 ) => {
     try {
         const { data } = await POST_API.getUserPosts(userId, getCondition);

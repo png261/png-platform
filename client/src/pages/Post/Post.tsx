@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import Vote from './Vote/Vote';
 import Comment from './Comment/Comment';
 import Loading from 'src/components/Loading/Loading';
+import * as socket from 'src/socket/socket';
 
 export default function Post() {
     const user = useSelector((state) => state.auth.user);
@@ -16,6 +17,7 @@ export default function Post() {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+        socket.joinRoom(id);
         const handlePost = async () => {
             setIsLoading(true);
             const { post } = await getPost(id);
@@ -38,7 +40,7 @@ export default function Post() {
                 <Editor value={post.content} readOnly />
             </article>
             <Vote post={post} postId={id} userId={user._id} />
-            <Comment postId={id} userId={user._id} />
+            <Comment postId={id} />
         </MainLayout>
     );
 }

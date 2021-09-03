@@ -1,7 +1,7 @@
 import MainLayout from 'src/layouts/MainLayout';
 import { Navbar } from './Navbar/Navbar';
 import { getPosts } from 'src/action/post';
-import InfinitePosts from 'src/components/InfinitePosts/InfinitePosts';
+import InfiniteList from 'src/components/InfiniteList/InfiniteList';
 import { Link } from 'react-router-dom';
 import { PATH } from 'src/constants/paths';
 
@@ -16,8 +16,8 @@ export default function Home() {
                     <li>a (nearly) no-CSS, fast, minimalist website.</li>
                 </ul>
                 <li>all posts</li>
-                <InfinitePosts
-                    getPosts={getPosts}
+                <InfiniteList
+                    getData={getPosts}
                     limitLength={10}
                     endMessage={
                         <ul>

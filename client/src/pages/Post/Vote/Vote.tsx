@@ -1,24 +1,19 @@
 import { useState } from 'react';
 import { votePost } from 'src/action/post';
+import * as socket from 'src/socket/socket';
 
 export default function Vote({ post, postId, userId }) {
     const [vote, setVote] = useState(post.vote.length);
     const [isVoted, setIsVoted] = useState(post.vote.includes(userId));
 
-    const updateVoteCount = (newPost) => {
-        if (userId) {
-            setIsVoted(newPost.vote.includes(userId));
-        }
-        setVote(newPost.vote.length);
-    };
+    socket.updateVote((votes: string[]) => {
+        setIsVoted(votes.includes(userId));
+        setVote(votes.length);
+    });
 
     const handleVote = async (e) => {
-        if (!userId) {
-            return;
-        }
         e.preventDefault();
-        const { post } = await votePost(postId);
-        updateVoteCount(post);
+        await votePost(postId);
     };
 
     return (

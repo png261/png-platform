@@ -20,14 +20,14 @@ router.get('/', validate.load, (req, res) => {
 router.patch('/', validate.update, async (req, res) => {
     await catchForm(req, res, async () => {
         const { userId, user } = req.validate;
-        const hashedPassword = newPassword
-            ? await argon2.hash(newPassword)
+        const hashedPassword = req.body?.newPassword
+            ? await argon2.hash(req.body?.newPassword)
             : user.password;
 
         await User.findOneAndUpdate(
             { _id: userId },
             {
-                username: newUsername,
+                username: req.body.newUsername,
                 password: hashedPassword,
             }
         );

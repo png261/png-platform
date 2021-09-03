@@ -2,37 +2,39 @@ import { ReactElement, useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Link } from 'react-router-dom';
 import { PATH } from 'src/constants/paths';
+import * as socket from 'src/socket/socket';
 
 interface Props {
-    getPosts: (options: GetCondititon) => any;
+    getData: (options: GetCondition) => any;
     limitLength?: number;
     endMessage?: ReactElement;
 }
 
-export default function InfinitePosts({
-    getPosts,
+export default function InfiniteComments({
+    getData,
     limitLength,
     endMessage,
 }: Props) {
     const [maxLength, setMaxLength] = useState(Infinity);
-    const [data, setData] = useState([]);
+    const [comments, setComments] = useState([]);
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
     const LIMIT = 20;
 
     const next = async () => {
-        const getCondititon = { page, limit: LIMIT };
-        const { posts, count } = await getPosts(getCondititon);
-        setData((state): any => [...state, ...posts]);
+        const getCondition = { page, limit: LIMIT };
+        const { newData, count } = await getData(getCondition);
+        setComments((prev): any => [...prev, ...newData]);
         setMaxLength(count);
-        setPage((state) => ++state);
+        setPage((prev) => ++prev);
     };
 
     useEffect(() => {
-        if (data.length >= (limitLength || maxLength)) {
+        if (comments.length >= (limitLength || maxLength)) {
             setHasMore(false);
         }
-    }, [data]);
+        socket.updateComments(comments, setComments);
+    }, [comments]);
 
     useEffect(() => {
         next();
@@ -40,7 +42,7 @@ export default function InfinitePosts({
 
     return (
         <InfiniteScroll
-            dataLength={data.length}
+            dataLength={comments.length}
             next={next}
             hasMore={hasMore}
             loader={
@@ -51,12 +53,9 @@ export default function InfinitePosts({
             endMessage={endMessage}
         >
             <ul>
-                {data.slice(0, limitLength).map((post: any) => (
+                {comments.map((comment: any) => (
                     <li>
-                        <span>{post.createdAt}: </span>
-                        <Link to={`${PATH.POST}/${post._id}`}>
-                            {post.title}
-                        </Link>
+                        {comment.user.username}: {comment.content}
                     </li>
                 ))}
             </ul>
