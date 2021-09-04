@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
         const posts = await Post.find({ status: 'PUBLIC' }, null, {
             skip: page * limit,
             limit: +limit,
-        });
+        }).populate('user', 'username');
         res.json({ success: true, newData: posts, count });
     });
 });
@@ -27,7 +27,7 @@ router.get('/:id', validate.getPost, (req, res) => {
     res.json({ success: true, post: req.validate.post });
 });
 
-//@route GET api/posts/userj:id
+//@route GET api/posts/user:id
 //@desc Get all post of user
 //@access Public
 router.get('/user/:id', validate.getUserPosts, (req, res) => {

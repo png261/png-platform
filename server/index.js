@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const authRouter = require('./routes/auth');
+const userRouter = require('./routes/user');
 const postRouter = require('./routes/post');
 const commentRouter = require('./routes/comment');
 const passport = require('passport');
@@ -28,6 +29,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/api/auth', authRouter);
+app.use('/api/user', userRouter);
 app.use('/api/posts', postRouter);
 app.use('/api/posts', commentRouter);
 

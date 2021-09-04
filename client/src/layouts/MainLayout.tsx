@@ -1,8 +1,9 @@
-import React, { ReactElement } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { PATH } from 'src/constants/paths';
+import { useSelector } from 'react-redux';
 
 export default function MainLayout({ children }) {
+    const isLoading = useSelector((state) => state.loading);
     const location = useLocation();
     const history = useHistory();
     const goToPreviousPath = (e) => {
@@ -22,7 +23,7 @@ export default function MainLayout({ children }) {
                     <br />
                 </>
             )}
-            {children}
+            {isLoading ? 'loading...' : children}
         </div>
     );
 }

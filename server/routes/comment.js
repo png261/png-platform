@@ -16,6 +16,9 @@ router.get('/:postId/comment', validate.get, (req, res) => {
         let comments = await Comment.find({ postId }, null, {
             skip: page * limit,
             limit: +limit,
+            sort: {
+                createdAt: -1,
+            },
         }).populate('user', 'username');
 
         res.json({ success: true, newData: comments, count });

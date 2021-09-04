@@ -3,7 +3,6 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { Link } from 'react-router-dom';
 import { PATH } from 'src/constants/paths';
 
-
 interface Props {
     getData: (options: GetCondition) => any;
     limitLength?: number;
@@ -33,34 +32,40 @@ export default function InfiniteList({
         if (data.length >= (limitLength || maxLength)) {
             setHasMore(false);
         }
-    }, [data]);
+    }, [data, maxLength]);
 
     useEffect(() => {
         next();
     }, []);
 
     return (
-        <InfiniteScroll
-            dataLength={data.length}
-            next={next}
-            hasMore={hasMore}
-            loader={
-                <ul>
-                    <li>Loading...</li>
-                </ul>
-            }
-            endMessage={endMessage}
-        >
-            <ul>
-                {data.map((item: any) => (
-                    <li>
-                        <span>{item.createdAt}: </span>
-                        <Link to={`${PATH.POST}/${item._id}`}>
-                            {item.title}
-                        </Link>
-                    </li>
-                ))}
-            </ul>
-        </InfiniteScroll>
+        <>
+            {maxLength > 0 ? (
+                <InfiniteScroll
+                    dataLength={data.length}
+                    next={next}
+                    hasMore={hasMore}
+                    loader={
+                        <ul>
+                            <li>Loading...</li>
+                        </ul>
+                    }
+                    endMessage={endMessage}
+                >
+                    <ul>
+                        {data.map((item: any) => (
+                            <li>
+                                <span>{item.createdAt}: </span>
+                                <Link to={`${PATH.POST}/${item._id}`}>
+                                    {item.title}
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </InfiniteScroll>
+            ) : (
+                <p>have no post to show</p>
+            )}
+        </>
     );
 }

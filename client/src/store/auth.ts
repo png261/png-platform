@@ -2,14 +2,17 @@ import { createSlice } from '@reduxjs/toolkit';
 
 interface AuthState {
     isAuthenticated: boolean;
-    isLoading: boolean;
-    user: { _id?: string; email: string; username: string; createdAt?: string };
+    user: User;
 }
 
 const initialState: AuthState = {
     isAuthenticated: false,
-    isLoading: true,
-    user: { email: '', username: '' },
+    user: {
+        _id: '',
+        email: '',
+        username: '',
+        createdAt: '',
+    },
 };
 
 const authSlice = createSlice({
@@ -19,12 +22,11 @@ const authSlice = createSlice({
         setUser(state, action) {
             return {
                 isAuthenticated: true,
-                isLoading: false,
                 user: action.payload,
             };
         },
         restAuth() {
-            return { ...initialState, isLoading: false };
+            return initialState;
         },
     },
 });

@@ -7,10 +7,10 @@ export default function GuestGuard({ children, ...props }) {
 
     return (
         <>
-            {!isAuthenticated ? (
-                <Route {...props}>{children}</Route>
-            ) : (
+            {isAuthenticated ? (
                 <Redirect to={PATH.HOME} />
+            ) : (
+                <Route {...props}>{children}</Route>
             )}
         </>
     );

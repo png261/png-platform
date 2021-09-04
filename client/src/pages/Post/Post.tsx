@@ -1,4 +1,4 @@
-import { Redirect, useParams } from 'react-router-dom';
+import { Link, Redirect, useParams } from 'react-router-dom';
 import { PATH } from 'src/constants/paths';
 import MainLayout from 'src/layouts/MainLayout';
 import Editor from 'rich-markdown-editor';
@@ -9,6 +9,7 @@ import Vote from './Vote/Vote';
 import Comment from './Comment/Comment';
 import Loading from 'src/components/Loading/Loading';
 import * as socket from 'src/socket/socket';
+import { formatTime } from 'src/utils/time';
 
 export default function Post() {
     const user = useSelector((state) => state.auth.user);
@@ -34,7 +35,14 @@ export default function Post() {
         <MainLayout>
             <article>
                 <p className="post-meta">
-                    <time>{post.createdAt}</time>
+                    <Link
+                        to={`${PATH.ACCOUNT}/${post.user._id}`}
+                        className="normal-link"
+                    >
+                        {post.user.username}
+                    </Link>
+                    {' - '}
+                    <time>{formatTime(post.createdAt)}</time>
                 </p>
                 <h1>{post.title}</h1>
                 <Editor value={post.content} readOnly />

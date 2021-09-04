@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const PostSchema = new Schema({
-    userId: { type: Schema.Types.ObjectId, ref: 'user', require: true },
+    user: { type: Schema.Types.ObjectId, ref: 'user', require: true },
     title: {
         type: String,
         require: true,
@@ -12,8 +12,8 @@ const PostSchema = new Schema({
         require: true,
     },
     vote: {
-        type:Array,
-        default:[]
+        type: Array,
+        default: [],
     },
     status: {
         type: String,

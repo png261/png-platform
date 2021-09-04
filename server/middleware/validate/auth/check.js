@@ -22,6 +22,7 @@ const register = (req, res) => {
         email: Joi.string().email().required(),
         username: Joi.string().min(6).required(),
         password: Joi.string().min(6).required(),
+        password_confirm: Joi.string().valid(Joi.ref('password')).required(),
     });
     checkRequest(req, res, schema);
 };

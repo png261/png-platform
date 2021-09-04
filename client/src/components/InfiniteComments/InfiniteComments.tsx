@@ -19,7 +19,7 @@ export default function InfiniteComments({
     const [comments, setComments] = useState([]);
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
-    const LIMIT = 20;
+    const LIMIT = 10;
 
     const next = async () => {
         const getCondition = { page, limit: LIMIT };
@@ -45,20 +45,20 @@ export default function InfiniteComments({
             dataLength={comments.length}
             next={next}
             hasMore={hasMore}
-            loader={
-                <ul>
-                    <li>Loading...</li>
-                </ul>
-            }
+            loader={<p>Loading...</p>}
             endMessage={endMessage}
         >
-            <ul>
-                {comments.map((comment: any) => (
-                    <li>
-                        {comment.user.username}: {comment.content}
-                    </li>
-                ))}
-            </ul>
+            {comments.map((comment: any) => (
+                <p>
+                    <Link
+                        to={`${PATH.ACCOUNT}/${comment.user._id}`}
+                        className="normal-link"
+                    >
+                        {comment.user.username}
+                    </Link>
+                    : {comment.content}
+                </p>
+            ))}
         </InfiniteScroll>
     );
 }

@@ -30,6 +30,7 @@ export default function Home() {
                 <br />
                 <br />
                 <input
+                    type="password"
                     name="password"
                     placeholder="password"
                     onChange={updateFormData}

@@ -111,5 +111,9 @@ img {
     margin: 0 auto;
 }
 .ml {
-    margin-left: 1rem;
+    margin-left: 0.75rem;
+}
+.normal-link:not(:hover) {
+    text-decoration: none;
+    color: #000;
 }

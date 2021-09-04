@@ -11,6 +11,7 @@ export default function Home() {
         email: '',
         username: '',
         password: '',
+        password_confirm: '',
     });
     const updateAccount = (e: React.ChangeEvent<HTMLInputElement>) => {
         setAccount((state) => ({ ...state, [e.target.name]: e.target.value }));
@@ -26,6 +27,7 @@ export default function Home() {
             <h1>Register</h1>
             <form>
                 <input
+                    type="email"
                     name="email"
                     placeholder="email"
                     onChange={updateAccount}
@@ -34,6 +36,7 @@ export default function Home() {
                 <br />
                 <br />
                 <input
+                    type="text"
                     name="username"
                     placeholder="username"
                     onChange={updateAccount}
@@ -42,10 +45,20 @@ export default function Home() {
                 <br />
                 <br />
                 <input
+                    type="password"
                     name="password"
                     placeholder="password"
                     onChange={updateAccount}
                     value={account['password']}
+                />
+                <br />
+                <br />
+                <input
+                    type="password"
+                    name="password_confirm"
+                    placeholder="confirm password"
+                    onChange={updateAccount}
+                    value={account['password_confirm']}
                 />
                 <br />
                 <br />

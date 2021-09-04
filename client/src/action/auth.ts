@@ -1,10 +1,12 @@
 import * as AUTH_API from 'src/api/auth';
 import { LOCAL_STORAGE_TOKEN_NAME } from 'src/constants/localStorage';
 import { restAuth, setUser } from 'src/store/auth';
+import { endLoading, startLoading } from 'src/store/loading';
 import { setAuthorization } from 'src/utils/api';
 import { setLocalStorageToken } from 'src/utils/auth';
 
 export const loadUser = () => async (dispatch) => {
+    dispatch(startLoading());
     const token = localStorage[LOCAL_STORAGE_TOKEN_NAME];
     if (token) {
         setAuthorization(token);
@@ -13,12 +15,14 @@ export const loadUser = () => async (dispatch) => {
     try {
         const { data } = await AUTH_API.auth();
         if (data.success) {
+            dispatch(endLoading());
             dispatch(setUser(data.user));
         }
     } catch (error) {
         setLocalStorageToken(null);
         setAuthorization(null);
         dispatch(restAuth());
+        dispatch(endLoading());
         return { success: false, message: error.message };
     }
 };

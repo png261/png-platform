@@ -2,7 +2,10 @@ const Post = require('../../../models/Post');
 const User = require('../../../models/User');
 
 const getPost = async (req, res) => {
-    const post = await Post.findOne({ _id: req.params.id });
+    const post = await Post.findOne({ _id: req.params.id }).populate(
+        'user',
+        'username'
+    );
     if (!post) {
         return res
             .status(404)
@@ -27,14 +30,14 @@ const getUserPosts = async (req, res) => {
     const posts = await Post.find({ userId, status: 'PUBLIC' }, null, {
         skip: page * limit,
         limit: +limit,
-    });
+    }).populate('user', 'username');
 
     req.validate = { ...req.validate, posts, count };
 };
 
 const update = async (req, res) => {
     const postId = req.params.id;
-    const post = await Post.findById(postId);
+    const post = await Post.findById(postId).populate('user', 'username');
     if (!post) {
         return res
             .status(404)

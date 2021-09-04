@@ -21,6 +21,16 @@ export const updateComments = (
     });
 };
 
-/* export const isTyping = (status: boolean) => {
-    socket.emit('isTyping', status);
-}; */
+export const isTyping = ({
+    postId,
+    status,
+}: {
+    postId: string;
+    status: boolean;
+}) => {
+    socket.emit('isTyping', { postId, status });
+};
+
+export const someOneIsTyping = (cb: (status: boolean) => any) => {
+    socket.on('someOneIsTyping', cb);
+};

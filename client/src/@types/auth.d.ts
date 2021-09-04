@@ -1,3 +1,10 @@
+interface User {
+    _id: string;
+    email: string;
+    username: string;
+    createdAt: string;
+}
+
 interface Account {
     email: string;
     password: string;
