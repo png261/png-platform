@@ -1,7 +1,7 @@
 const Post = require('../../../models/Post');
 const User = require('../../../models/User');
 
-const getPost = async (req, res) => {
+const getPost = async (req, res, next) => {
     const post = await Post.findOne({ _id: req.params.id }).populate(
         'user',
         'username'
@@ -12,10 +12,11 @@ const getPost = async (req, res) => {
             .json({ success: false, message: 'Post not found' });
     }
 
-    req.validate = { ...req.validate, post };
+    req.validated = { ...req.validated, post };
+    next();
 };
 
-const getUserPosts = async (req, res) => {
+const getUserPosts = async (req, res, next) => {
     const userId = req.params.id;
     const { page, limit } = req.query;
 
@@ -32,10 +33,11 @@ const getUserPosts = async (req, res) => {
         limit: +limit,
     }).populate('user', 'username');
 
-    req.validate = { ...req.validate, posts, count };
+    req.validated = { ...req.validated, posts, count };
+    next();
 };
 
-const update = async (req, res) => {
+const update = async (req, res, next) => {
     const postId = req.params.id;
     const post = await Post.findById(postId).populate('user', 'username');
     if (!post) {
@@ -48,9 +50,11 @@ const update = async (req, res) => {
             .status(403)
             .json({ success: false, message: 'Permission denied' });
     }
+
+    next();
 };
 
-const vote = async (req, res) => {
+const vote = async (req, res, next) => {
     const postId = req.params.id;
     const post = await Post.findById(postId);
     if (!post) {
@@ -59,7 +63,8 @@ const vote = async (req, res) => {
             .json({ success: false, message: 'Post not found' });
     }
 
-    req.validate = { ...req.validate, post };
+    req.validated = { ...req.validated, post };
+    next();
 };
 
 module.exports = { getPost, getUserPosts, update, vote };

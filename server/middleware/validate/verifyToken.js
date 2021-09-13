@@ -1,18 +1,19 @@
 const jwt = require('jsonwebtoken');
 
-const verifyToken = (req, res) => {
-    const authHeader = req.header('Authorization'); // Authorization: Bearer <token>
-    const token = authHeader && authHeader.split(' ')[1];
-
-    if (!token) {
-        return res
-            .status(401)
-            .json({ success: false, message: 'Aceess token not found' });
-    }
-
+const verifyToken = (req, res, next) => {
     try {
+        const authHeader = req.header('Authorization'); // Authorization: Bearer <token>
+        const token = authHeader && authHeader.split(' ')[1];
+
+        if (!token) {
+            return res
+                .status(401)
+                .json({ success: false, message: 'Aceess token not found' });
+        }
+
         const decoded = jwt.verify(token, process.env.ACESS_TOKEN_SECRET);
-        req.validate = { ...req.validate, userId: decoded.userId };
+        req.validated = { ...req.validated, userId: decoded.userId };
+        next();
     } catch (error) {
         console.log(error);
         return res

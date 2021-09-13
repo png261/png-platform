@@ -24,14 +24,15 @@ router.get('/', async (req, res) => {
 //@desc Get a post by cuid
 //@access Public
 router.get('/:id', validate.getPost, (req, res) => {
-    res.json({ success: true, post: req.validate.post });
+    const { post } = req.validated;
+    res.json({ success: true, post });
 });
 
 //@route GET api/posts/user:id
 //@desc Get all post of user
 //@access Public
 router.get('/user/:id', validate.getUserPosts, (req, res) => {
-    const { posts, count } = req.validate;
+    const { posts, count } = req.validated;
     res.json({ success: true, newData: posts, count });
 });
 
@@ -40,7 +41,7 @@ router.get('/user/:id', validate.getUserPosts, (req, res) => {
 //@access Private
 router.post('/', validate.create, async (req, res) => {
     catchForm(req, res, async () => {
-        const { userId } = req.validate;
+        const { userId } = req.validated;
         const { title, content } = req.body;
         let newPost = new Post({ userId, title, content });
         newPost = await newPost.save();
@@ -93,7 +94,7 @@ router.delete('/:id', validate.remove, async (req, res) => {
 //@access Private
 router.post('/:id/vote', validate.vote, async (req, res) => {
     catchForm(req, res, async () => {
-        const { post, userId } = req.validate;
+        const { post, userId } = req.validated;
         const postId = req.params.id;
 
         let query = {
@@ -101,7 +102,7 @@ router.post('/:id/vote', validate.vote, async (req, res) => {
         };
         let message = 'Vote successfully';
 
-        if (post.vote.includes(req.validate.userId)) {
+        if (post.vote.includes(userId)) {
             query = {
                 $pull: { vote: userId },
             };

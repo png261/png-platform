@@ -1,7 +1,7 @@
-const User = require('../../../models/User')
+const User = require('../../../models/User');
 
-const get = async (req, res) => {
-    const userId = req.params.id
+const get = async (req, res, next) => {
+    const userId = req.params.id;
     const user = await User.findById(userId).select('-password');
     if (!user) {
         return res
@@ -9,7 +9,8 @@ const get = async (req, res) => {
             .json({ success: false, message: 'User not found' });
     }
 
-    req.validate = { ...req.validate, user };
+    req.validated = { ...req.validated, user };
+    next();
 };
 
-module.exports = { get }
+module.exports = { get };

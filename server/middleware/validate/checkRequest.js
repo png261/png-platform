@@ -1,9 +1,10 @@
-const checkRequest = (req, res, schema) => {
+const checkRequest = (req, res, next, schema) => {
     const options = {
         abortEarly: false, // include all errors
         allowUnknown: true, // ignore unknown props
         stripUnknown: true, // remove unknown props
     };
+
     const { error } = schema.validate(req.body, options);
     if (error) {
         const message = {};
@@ -14,6 +15,8 @@ const checkRequest = (req, res, schema) => {
             message,
         });
     }
+
+    next();
 };
 
 module.exports = checkRequest;

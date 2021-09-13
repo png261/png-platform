@@ -31,13 +31,16 @@ router.get('/:postId/comment', validate.get, (req, res) => {
 router.post('/:postId/comment', validate.create, async (req, res) => {
     catchForm(req, res, async () => {
         const { postId } = req.params;
+        const { userId } = req.validated;
+
         let newComment = new Comment({
-            user: req.validate.userId,
+            user: userId,
             postId: req.params.postId,
             content: req.body.content,
         });
+
         newComment = await newComment.save();
-        const user = await User.findById(req.validate.userId);
+        const user = await User.findById(userId);
         newComment.user = user;
 
         const io = req.app.get('socket.io');

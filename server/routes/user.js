@@ -6,7 +6,8 @@ const validate = require('../middleware/validate/user');
 //@desc Get user info by id
 //@access Public
 router.get('/:id', validate.get, (req, res) => {
-    res.json({ success: true, user: req.validate.user });
+    const { user } = req.validated;
+    res.json({ success: true, user: user });
 });
 
 module.exports = router;

@@ -11,56 +11,52 @@ const catchForm = require('../utils/catchForm');
 //@desc Check if user is logged in
 //@access Public
 router.get('/', validate.load, (req, res) => {
-    res.json({ success: true, user: req.validate.user });
+    res.json({ success: true, user: req.validated.user });
 });
 
 //@route PATCH api/auth
 //@desc Update username
 //@access Private
 router.patch('/', validate.update, async (req, res) => {
-    await catchForm(req, res, async () => {
-        const { userId, user } = req.validate;
-        const hashedPassword = req.body?.newPassword
-            ? await argon2.hash(req.body?.newPassword)
-            : user.password;
+    const { userId, user } = req.validated;
+    const hashedPassword = req.body?.newPassword
+        ? await argon2.hash(req.body?.newPassword)
+        : user.password;
 
-        await User.findOneAndUpdate(
-            { _id: userId },
-            {
-                username: req.body.newUsername,
-                password: hashedPassword,
-            }
-        );
+    await User.findOneAndUpdate(
+        { _id: userId },
+        {
+            username: req.body.newUsername,
+            password: hashedPassword,
+        }
+    );
 
-        res.json({ success: true, message: `Account updated successfully` });
-    });
+    res.json({ success: true, message: `Account updated successfully` });
 });
 
 //@route POST api/auth/register
 //@desc Register user
 //@access Public
 router.post('/register', validate.register, async (req, res) => {
-    await catchForm(req, res, async () => {
-        const { email, username, password } = req.body;
-        const hashedPassword = await argon2.hash(password);
-        const newUser = new User({
-            email,
-            username,
-            password: hashedPassword,
-        });
-        await newUser.save();
+    const { email, username, password } = req.body;
+    const hashedPassword = await argon2.hash(password);
+    const newUser = new User({
+        email,
+        username,
+        password: hashedPassword,
+    });
+    await newUser.save();
 
-        // Return token
-        const accessToken = jwt.sign(
-            { userId: newUser._id },
-            process.env.ACESS_TOKEN_SECRET
-        );
+    // Return token
+    const accessToken = jwt.sign(
+        { userId: newUser._id },
+        process.env.ACESS_TOKEN_SECRET
+    );
 
-        res.json({
-            success: true,
-            message: 'User created successfully',
-            accessToken,
-        });
+    res.json({
+        success: true,
+        message: 'User created successfully',
+        accessToken,
     });
 });
 
@@ -68,18 +64,16 @@ router.post('/register', validate.register, async (req, res) => {
 //@desc Login user
 //@access Public
 router.post('/login', validate.login, async (req, res) => {
-    await catchForm(req, res, async () => {
-        const { user } = req.validate;
+    const { user } = req.validated;
 
-        const accessToken = jwt.sign(
-            { userId: user._id },
-            process.env.ACESS_TOKEN_SECRET
-        );
-        res.json({
-            success: true,
-            message: 'Login successfully',
-            accessToken,
-        });
+    const accessToken = jwt.sign(
+        { userId: user._id },
+        process.env.ACESS_TOKEN_SECRET
+    );
+    res.json({
+        success: true,
+        message: 'Login successfully',
+        accessToken,
     });
 });
 

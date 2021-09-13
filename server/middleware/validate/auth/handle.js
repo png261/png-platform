@@ -1,19 +1,20 @@
 const User = require('../../../models/User');
 const argon2 = require('argon2');
 
-const load = async (req, res) => {
-    const { userId } = req.validate;
+const load = async (req, res, next) => {
+    const { userId } = req.validated;
     const user = await User.findById(userId).select('-password');
     if (!user) {
         return res
             .status(400)
             .json({ success: false, message: 'User not found' });
     }
-    req.validate = { ...req.validate, user };
+    req.validated = { ...req.validated, user };
+    next();
 };
 
-const update = async (req, res) => {
-    const { userId } = req.validate;
+const update = async (req, res, next) => {
+    const { userId } = req.validated;
     const user = await User.findById(userId);
     const isExistsUserName = await User.findOne({
         _id: { $ne: userId },
@@ -32,10 +33,11 @@ const update = async (req, res) => {
             .json({ success: false, message: 'username already in use' });
     }
 
-    req.validate = { ...req.validate, user };
+    req.validated = { ...req.validated, user };
+    next();
 };
 
-const login = async (req, res) => {
+const login = async (req, res, next) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
 
@@ -55,10 +57,11 @@ const login = async (req, res) => {
         });
     }
 
-    req.validate = { ...req.validate, user };
+    req.validated = { ...req.validated, user };
+    next();
 };
 
-const register = async (req, res) => {
+const register = async (req, res, next) => {
     const { email, username } = req.body;
     const isInUseEmail = await User.findOne({ email });
     const isInUseUsername = await User.findOne({ username });
@@ -76,6 +79,8 @@ const register = async (req, res) => {
             message: 'username already in use',
         });
     }
+
+    next();
 };
 
 module.exports = { login, register, load, update };
