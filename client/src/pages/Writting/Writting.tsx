@@ -1,47 +1,56 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import Editor from 'rich-markdown-editor';
 import { addPost } from 'src/action/post';
 import MainLayout from 'src/layouts/MainLayout';
 
 export default function Writting() {
-    const dispatch = useDispatch();
     const [content, setContent] = useState('');
-    const [title, setTitle] = useState('Your tittle is here');
+    const [title, setTitle] = useState('');
+    const history = useHistory();
 
     const onChange = (getContent) => {
         setContent(getContent());
     };
+
     const onChangeTitle = (e) => {
         setTitle(e.target.value);
     };
-    const savePost = () => {
-        const post = {
-            title,
-            content,
-        };
-        dispatch(addPost(post));
+
+    const savePost = async () => {
+        if (title == null) {
+            alert("title can't be empty");
+            return false;
+        }
+        if (content == null) {
+            alert("content can't be empty");
+            return false;
+        }
+
+        const data = await addPost({ title, content });
+        if (data.success) {
+            alert('done! post has been published');
+            return true;
+        } else {
+            alert(data.message);
+            return false;
+        }
     };
 
-    const pushish = (e) => {
+    const publish = async (e) => {
         e.preventDefault();
-        savePost();
+        (await savePost()) && history.push('/');
     };
-    const clear = () => {};
 
     return (
         <MainLayout>
             <div className="inline fr">
-                <a href="" onClick={pushish}>
-                    Pushish
+                <a href="#" onClick={publish}>
+                    Publish
                 </a>
-                <a href="" onClick={clear}>
-                    Delete
-                </a>
+                <a href="/">Cancel</a>
             </div>
-            <h1 contentEditable onChange={onChangeTitle}>
-                Your title is here
-            </h1>
+            <input onChange={onChangeTitle} placeholder="Your title" />
             <Editor autoFocus onChange={onChange} onSave={savePost} />
         </MainLayout>
     );
