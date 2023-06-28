@@ -23,6 +23,11 @@ export default function InfiniteList({
     const next = async () => {
         const getCondition = { page, limit: LIMIT };
         const { newData, count } = await getData(getCondition);
+        if(newData == null || count == null) {
+            setHasMore(false);
+            return;
+        }
+
         setData((prev): any => [...prev, ...newData]);
         setMaxLength(count);
         setPage((prev) => ++prev);

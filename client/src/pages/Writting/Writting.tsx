@@ -10,8 +10,7 @@ export default function Writting() {
     const [title, setTitle] = useState('Your tittle is here');
 
     const onChange = (getContent) => {
-        const content = getContent();
-        setContent(content);
+        setContent(getContent());
     };
     const onChangeTitle = (e) => {
         setTitle(e.target.value);

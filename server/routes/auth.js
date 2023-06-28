@@ -3,7 +3,6 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const argon2 = require('argon2');
 const User = require('../models/User');
-const passport = require('passport');
 const validate = require('../middleware/validate/auth');
 const catchForm = require('../utils/catchForm');
 
@@ -75,19 +74,6 @@ router.post('/login', validate.login, async (req, res) => {
         message: 'Login successfully',
         accessToken,
     });
-});
-
-// @desc    Auth with Google
-// @route   GET api/auth/google
-router.get(
-    '/google',
-    passport.authenticate('google', { scope: ['profile', 'email'] })
-);
-
-// @desc   Google auth callback
-// @route  GET api/auth/google/callback
-router.get('/google/callback', passport.authenticate('google'), (req, res) => {
-    res.json({ success: true, message: 'Login successful' });
 });
 
 // @desc   Logout user

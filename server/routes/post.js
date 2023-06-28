@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Post = require('../models/Post');
+const User = require('../models/User');
 const Comment = require('../models/Comment');
 const validate = require('../middleware/validate/post');
 const catchForm = require('../utils/catchForm');
@@ -43,9 +44,10 @@ router.post('/', validate.create, async (req, res) => {
     catchForm(req, res, async () => {
         const { userId } = req.validated;
         const { title, content } = req.body;
-        let newPost = new Post({ userId, title, content });
+        const user = await User.findById(userId);
+        let newPost = new Post({ user, title, content });
         newPost = await newPost.save();
-        res.json({ success: true, message: 'Posts has been created', newPost });
+        res.json({ success: true, message: 'Posts has been created', newPost, userId});
     });
 });
 
