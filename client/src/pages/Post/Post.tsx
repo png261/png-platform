@@ -35,10 +35,7 @@ export default function Post() {
         <MainLayout>
             <article>
                 <p className="post-meta">
-                    <Link
-                        to={`${PATH.ACCOUNT}/${post.user._id}`}
-                        className="normal-link"
-                    >
+                    <Link to={`${PATH.ACCOUNT}/${post.user._id}`}>
                         {post.user.username}
                     </Link>
                     {' - '}

@@ -27,24 +27,6 @@ export default function Home() {
                         </ul>
                     }
                 />
-                <li>category</li>
-                <ul>
-                    <li>
-                        <a href="/no-style-please/post-example-with-headings-and-toc.html">
-                            lifer styles
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/no-style-please/language-tests.html">
-                            language learning
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/no-style-please/language-tests.html">
-                            coding
-                        </a>
-                    </li>
-                </ul>
             </ul>
         </MainLayout>
     );

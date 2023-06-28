@@ -34,7 +34,7 @@ export default function InfiniteList({
     };
 
     useEffect(() => {
-        if (data.length >= (limitLength || maxLength)) {
+        if (data.length < (limitLength || maxLength)) {
             setHasMore(false);
         }
     }, [data, maxLength]);
