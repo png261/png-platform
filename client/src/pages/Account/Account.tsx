@@ -10,8 +10,8 @@ import { startLoading, endLoading } from 'src/store/loading';
 
 export default function Account() {
     const { id } = useParams<{ id: string }>();
-    const [totalPosts, setTotalPost] = useState('...loading');
-    const [user, setUser]: [any, any] = useState({});
+    const [totalPosts, setTotalPost] = useState(null);
+    const [user, setUser]: [any, any] = useState(null);
     const dispatch = useDispatch();
 
     const getPosts = async (getCondition: GetCondition) => {
@@ -19,26 +19,31 @@ export default function Account() {
     };
 
     const getUser = async () => {
-        dispatch(startLoading());
-        const data = await USER_ACTION.get(id);
-        const { count } = await getUserPosts(data.user.id, {
+        const { user } = await USER_ACTION.get(id);
+        setUser(user);
+        const { count } = await getUserPosts(id, {
             page: 0,
             limit: 0,
         });
-        setUser(data.user);
         setTotalPost(count);
-        dispatch(endLoading());
     };
-    getUser();
+
+    useEffect(() => {
+        dispatch(startLoading());
+        getUser();
+        dispatch(endLoading());
+    }, []);
+
+    if (user == null) {
+        return <MainLayout>loading...</MainLayout>;
+    }
 
     return (
         <MainLayout>
             <h1>user: {user.username}</h1>
-            <q>be your self</q>
-            <br />
             <br />
             <p>Joined: {formatTime(user.createdAt)}</p>
-            <p>total posts: {totalPosts}</p>
+            <p>total posts: {totalPosts == null ? 'loading..' : totalPosts}</p>
             <h2>user's posts:</h2>
             <InfinityList getData={getPosts} />
         </MainLayout>
