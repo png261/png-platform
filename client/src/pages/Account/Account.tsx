@@ -21,11 +21,11 @@ export default function Account() {
     const getUser = async () => {
         const { user } = await USER_ACTION.get(id);
         setUser(user);
-        const { count } = await getUserPosts(id, {
+        const data = await getUserPosts(user._id, {
             page: 0,
             limit: 0,
         });
-        setTotalPost(count);
+        setTotalPost(data.count);
     };
 
     useEffect(() => {

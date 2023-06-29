@@ -20,15 +20,15 @@ const getUserPosts = async (req, res, next) => {
     const userId = req.params.id;
     const { page, limit } = req.query;
 
-    const isExistUser = await User.findById(userId);
-    if (!isExistUser) {
+    const user = await User.findById(userId);
+    if (!user) {
         return res
             .status(404)
             .json({ success: false, message: 'User not found' });
     }
 
-    const count = await Post.find({ userId, status: 'PUBLIC' }).count();
-    const posts = await Post.find({ userId, status: 'PUBLIC' }, null, {
+    const count = await Post.find({ user, status: 'PUBLIC' }).count();
+    const posts = await Post.find({ user, status: 'PUBLIC' }, null, {
         skip: page * limit,
         limit: +limit,
     }).populate('user', 'username');

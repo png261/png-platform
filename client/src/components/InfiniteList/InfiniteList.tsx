@@ -11,19 +11,18 @@ interface Props {
 
 export default function InfiniteList({
     getData,
-    limitLength,
+    limitLength = 20,
     endMessage,
 }: Props) {
     const [maxLength, setMaxLength] = useState(Infinity);
     const [data, setData] = useState([]);
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
-    const LIMIT = 20;
 
     const next = async () => {
-        const getCondition = { page, limit: LIMIT };
+        const getCondition = { page, limit: limitLength };
         const { newData, count } = await getData(getCondition);
-        if(newData == null || count == null) {
+        if (newData == null || count == null) {
             setHasMore(false);
             return;
         }
