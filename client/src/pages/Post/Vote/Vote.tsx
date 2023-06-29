@@ -1,13 +1,15 @@
+import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import { votePost } from 'src/action/post';
 import * as socket from 'src/socket/socket';
 
-export default function Vote({ post, postId, userId }) {
+export default function Vote({ post, postId }) {
+    const { user, isAuthenticated } = useSelector((state) => state.auth);
     const [vote, setVote] = useState(post.vote.length);
-    const [isVoted, setIsVoted] = useState(post.vote.includes(userId));
+    const [isVoted, setIsVoted] = useState(post.vote.includes(user._id));
 
     socket.updateVote((votes: string[]) => {
-        setIsVoted(votes.includes(userId));
+        setIsVoted(votes.includes(user._id));
         setVote(votes.length);
     });
 
@@ -16,17 +18,22 @@ export default function Vote({ post, postId, userId }) {
         await votePost(postId);
     };
 
+    if (!isAuthenticated) {
+        return (
+            <p>
+                {vote}{' '}
+                <button disabled>
+                    <abbr title="Login to claps">claps</abbr>
+                </button>
+            </p>
+        );
+    }
+
     return (
         <p>
             {vote}{' '}
-            <button disabled={!userId} onClick={handleVote}>
-                {isVoted ? (
-                    'unclaps'
-                ) : userId ? (
-                    'claps'
-                ) : (
-                    <abbr title="Login to claps">claps</abbr>
-                )}
+            <button onClick={handleVote}>
+                {isVoted ? 'unclaps' : 'claps'}
             </button>
         </p>
     );

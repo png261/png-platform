@@ -44,7 +44,7 @@ export default function Post() {
                 <h1>{post.title}</h1>
                 <Editor value={post.content} readOnly />
             </article>
-            <Vote post={post} postId={id} userId={user._id} />
+            <Vote post={post} postId={id} />
             <Comment postId={id} />
         </MainLayout>
     );

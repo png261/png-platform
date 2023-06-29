@@ -24,13 +24,18 @@ export default function InfiniteComments({
     const next = async () => {
         const getCondition = { page, limit: LIMIT };
         const { newData, count } = await getData(getCondition);
+        if (newData == null || count == null) {
+            setHasMore(false);
+            return;
+        }
+
         setComments((prev): any => [...prev, ...newData]);
         setMaxLength(count);
         setPage((prev) => ++prev);
     };
 
     useEffect(() => {
-        if (comments.length >= (limitLength || maxLength)) {
+        if (comments.length < (limitLength || maxLength)) {
             setHasMore(false);
         }
         socket.updateComments(comments, setComments);
@@ -48,17 +53,21 @@ export default function InfiniteComments({
             loader={<p>Loading...</p>}
             endMessage={endMessage}
         >
-            {comments.map((comment: any) => (
-                <p>
-                    <Link
-                        to={`${PATH.ACCOUNT}/${comment.user._id}`}
-                        className="normal-link"
-                    >
-                        {comment.user.username}
-                    </Link>
-                    : {comment.content}
-                </p>
-            ))}
+            {comments.length > 0 ? (
+                comments.map((comment: any) => (
+                    <p>
+                        <Link
+                            to={`${PATH.ACCOUNT}/${comment.user._id}`}
+                            className="normal-link"
+                        >
+                            <i>{comment.user.username}</i>
+                        </Link>
+                        : {comment.content}
+                    </p>
+                ))
+            ) : (
+                <i>there are no comments to show</i>
+            )}
         </InfiniteScroll>
     );
 }

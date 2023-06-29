@@ -47,7 +47,7 @@ export default function Comment({ postId }) {
 
     return (
         <div>
-            <h4>comment:</h4>
+            <h3>Comment:</h3>
             {isAuthenticated ? (
                 <>
                     <textarea
