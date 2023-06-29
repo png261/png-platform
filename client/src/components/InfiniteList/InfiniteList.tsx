@@ -1,5 +1,6 @@
 import { ReactElement, useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { formatTime } from 'src/utils/time';
 import { Link } from 'react-router-dom';
 import { PATH } from 'src/constants/paths';
 
@@ -59,7 +60,7 @@ export default function InfiniteList({
                     <ul>
                         {data.map((item: any) => (
                             <li>
-                                <span>{item.createdAt}: </span>
+                                <span>{formatTime(item.createdAt)}: </span>
                                 <Link to={`${PATH.POST}/${item._id}`}>
                                     {item.title}
                                 </Link>
